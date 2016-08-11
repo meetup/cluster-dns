@@ -23,6 +23,10 @@ before_install:
   - export CI_BUILD_NUMBER=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $CI_BUILD_NUMBER; else echo "${TRAVIS_BUILD_NUMBER}-SNAPSHOT"; fi)
   - echo "CI_BUILD_NUMBER=${CI_BUILD_NUMBER}"
 
+  # Install envtpl for easy templating.
+  - sudo pip install envtpl
+  - envtpl < .nexuscredential > "$HOME/.ivy2/.credentials"
+
   # Login to mup.cr
   - docker login --email not@val.id --username $DOCKER_LOGIN --password $DOCKER_PASS
   - docker login --email not@val.id --username $DOCKER_MUP_LOGIN --password $DOCKER_MUP_PASS mup.cr
