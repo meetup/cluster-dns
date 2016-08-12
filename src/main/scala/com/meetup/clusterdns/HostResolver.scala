@@ -8,7 +8,7 @@ import com.meetup.logging.Logging
 import scala.util.{Failure, Success, Try}
 
 trait HostResolver {
-  def resolve(host: String): MessageModifier
+  def resolve(host: String): Option[ResourceRecordModifier]
 }
 
 case object DefaultResolver extends HostResolver with Logging {
@@ -16,10 +16,10 @@ case object DefaultResolver extends HostResolver with Logging {
     log.info(s"Resolving host: $host")
     Try(InetAddress.getByName(host)) match {
       case Success(addr: InetAddress) =>
-        Answers(RRName(host) ~ ARecord(addr.getHostAddress))
+        Some(ARecord(addr.getHostAddress))
 
       case Failure(e) =>
-        ServerFailure
+        None
     }
   }
 }

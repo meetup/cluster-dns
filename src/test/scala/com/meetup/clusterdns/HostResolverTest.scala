@@ -8,23 +8,22 @@ class HostResolverTest extends FunSpec with Matchers {
   describe("DefaultResolver") {
     it("should resolve using system") {
       val result = DefaultResolver.resolve("localhost")
-      val response = Response ~ result
-      response.answer match {
-        case Seq(ARecord(record)) =>
-          record.address.getHostAddress shouldBe "127.0.0.1"
-        case x =>
-          fail(s"Unrecognized result: $x")
+      // Turn into message.
+      result.nonEmpty shouldBe true
+      result.foreach { answer =>
+        val response = Response ~ Answers(answer)
+        response.answer match {
+          case Seq(ARecord(record)) =>
+            record.address.getHostAddress shouldBe "127.0.0.1"
+          case x =>
+            fail(s"Unrecognized result: $x")
+        }
       }
     }
 
     it("should return failure for bad resolves") {
-      val result = DefaultResolver.resolve("not.val_id")
-      val response = Response ~ result
-      response match {
-        case Response(_) ~ ServerFailure() =>
-        case x =>
-          fail(s"Unrecognized result: $x")
-      }
+      val result = DefaultResolver.resolve("not.valid")
+      result shouldBe None
     }
   }
 
