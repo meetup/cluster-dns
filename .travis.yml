@@ -27,9 +27,7 @@ before_install:
   - sudo pip install envtpl
   - envtpl < .nexuscredential > "$HOME/.ivy2/.credentials"
 
-  # Login to mup.cr
   - docker login --email not@val.id --username $DOCKER_LOGIN --password $DOCKER_PASS
-  - docker login --email not@val.id --username $DOCKER_MUP_LOGIN --password $DOCKER_MUP_PASS mup.cr
 
 script:
   - make $(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo publish; else echo package; fi)

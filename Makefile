@@ -8,7 +8,7 @@ CI_WORKDIR ?= $(shell pwd)
 
 VERSION ?= 0.1.$(CI_BUILD_NUMBER)
 
-BUILDER_TAG = "mup.cr/blt/build-sbt:78"
+BUILDER_TAG = "meetup/sbt-builder:0.1.3"
 
 PUBLISH_TAG ?= "meetup/cluster-dns:$(VERSION)"
 
@@ -47,10 +47,20 @@ package:
 		-e VERSION=$(VERSION) \
 		-e COVERALLS_REPO_TOKEN=$(COVERALLS_REPO_TOKEN) \
 		$(BUILDER_TAG) \
-		__package-sbt
+		make __package-sbt
 
 publish: package
 	docker push $(PUBLISH_TAG)
+
+run-local:
+	-docker stop cluster-dns
+	-docker rm cluster-dns
+	docker run \
+	    --name cluster-dns \
+		-e TRANS_DOMAIN="mup.zone" \
+		-p 32053/udp \
+		$(PUBLISH_TAG)
+
 
 # Required for SBT.
 version:
