@@ -46,6 +46,8 @@ package:
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-e VERSION=$(VERSION) \
 		-e COVERALLS_REPO_TOKEN=$(COVERALLS_REPO_TOKEN) \
+		-e TRAVIS_JOB_ID=$(TRAVIS_JOB_ID) \
+		-e TRAVIS_PULL_REQUEST=$(TRAVIS_PULL_REQUEST) \
 		$(BUILDER_TAG) \
 		make __package-sbt
 
@@ -57,10 +59,9 @@ run-local:
 	-docker rm cluster-dns
 	docker run \
 	    --name cluster-dns \
-		-e TRANS_DOMAIN="mup.zone" \
+		-e TRANS_DOMAIN="test.com" \
 		-p 32053/udp \
 		$(PUBLISH_TAG)
-
 
 # Required for SBT.
 version:

@@ -1,10 +1,10 @@
 sudo: required
 language: bash
 
-# Only build pushes to master.
+# exclude tags.
 branches:
-  only:
-    - master
+  except:
+    - - /^\d+.\d+.\d+$/
 
 services:
   - docker
@@ -23,10 +23,6 @@ before_install:
   - export CI_BUILD_NUMBER=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $CI_BUILD_NUMBER; else echo "${TRAVIS_BUILD_NUMBER}-SNAPSHOT"; fi)
   - echo "CI_BUILD_NUMBER=${CI_BUILD_NUMBER}"
 
-  # Install envtpl for easy templating.
-  - sudo pip install envtpl
-  - envtpl < .nexuscredential > "$HOME/.ivy2/.credentials"
-
   - docker login --email not@val.id --username $DOCKER_LOGIN --password $DOCKER_PASS
 
 script:
@@ -39,7 +35,7 @@ after_success:
   - echo "GIT_TAG=$GIT_TAG"
   - >
     [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] &&
-    git tag $GIT_TAG -f -a -m "Version $GIT_TAG built by Travis CI - https://travis-ci.com/$TRAVIS_REPO_SLUG/jobs/$TRAVIS_JOB_ID"
+    git tag $GIT_TAG -f -a -m "Version $GIT_TAG built by Travis CI - https://travis-ci.org/$TRAVIS_REPO_SLUG/jobs/$TRAVIS_JOB_ID"
     || true
   - >
     [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ] &&
