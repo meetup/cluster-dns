@@ -15,7 +15,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
-
 class ClusterDNSComponentTest extends FunSpec with Matchers with BeforeAndAfterAll {
   implicit val system = ActorSystem("DnsRequester")
   implicit val timeout = Timeout(5.seconds)
@@ -43,9 +42,8 @@ class ClusterDNSComponentTest extends FunSpec with Matchers with BeforeAndAfterA
     }
 
   }
-  override def afterAll{
+  override def afterAll {
     ClusterDNS.shutdown()
   }
-
 
 }
