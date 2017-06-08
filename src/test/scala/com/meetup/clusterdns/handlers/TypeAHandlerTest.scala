@@ -10,7 +10,7 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FunSpec, Matchers}
 
 class TypeAHandlerTest extends FunSpec with Matchers with MockitoSugar {
-  it("should resolve with the provided resolver") {
+  it("should resolve with the provided resolver for A records") {
     val host = "google.de"
     val addr = "10.0.0.1"
 
@@ -61,10 +61,9 @@ class TypeAHandlerTest extends FunSpec with Matchers with MockitoSugar {
     }
   }
 
-  it("should resolve with the provided resolver") {
+  it("should resolve with the provided resolver for AAAA records") {
     val host = "google.de"
     val addr = "0000 0000 0000 0000 0000 FFFF 0A00 0001"
-
     val resolver = mock[HostResolver]
     val resolved = Some(AAAARecord(addr.toString))
     when(resolver.resolve(any[String]())).thenReturn(resolved)
