@@ -63,7 +63,7 @@ class TypeAHandlerTest extends FunSpec with Matchers with MockitoSugar {
 
   it("should resolve with the provided resolver for AAAA records") {
     val host = "google.de"
-    val addr = "0000 0000 0000 0000 0000 FFFF 0A00 0001"
+    val addr = "1:2:3:4:5:6:7:8"
     val resolver = mock[HostResolver]
     val resolved = Some(AAAARecord(addr.toString))
     when(resolver.resolve(any[String]())).thenReturn(resolved)
