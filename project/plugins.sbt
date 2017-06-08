@@ -3,6 +3,6 @@ resolvers +=  Resolver.url(
   new java.net.URL("https://dl.bintray.com/meetup/sbt-plugins/")
 )(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.meetup" % "sbt-plugins" % "0.2.19")
+addSbtPlugin("com.meetup" % "sbt-plugins" % "0.3.33")
 
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")

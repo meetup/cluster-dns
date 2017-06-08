@@ -10,13 +10,13 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FunSpec, Matchers}
 
 class TypeAHandlerTest extends FunSpec with Matchers with MockitoSugar {
-  it("should resolve with the provided resolver") {
+  it("should resolve with the provided resolver for A records") {
     val host = "google.de"
     val addr = "10.0.0.1"
 
     val resolver = mock[HostResolver]
     val resolved = Some(ARecord(addr.toString))
-    when(resolver.resolve(any())).thenReturn(resolved)
+    when(resolver.resolve(any[String]())).thenReturn(resolved)
 
     val message: Message = Query ~ Questions(QName(host) ~ TypeA)
     val result = new TypeAHandler(resolver, None).handle.lift(message)
@@ -53,6 +53,29 @@ class TypeAHandlerTest extends FunSpec with Matchers with MockitoSugar {
       r.answer.nonEmpty shouldBe true
       r.answer match {
         case List(ARecord(record)) =>
+          record.address shouldBe InetAddresses.forString(addr)
+
+        case other =>
+          fail(s"Didn't recognize result: $other")
+      }
+    }
+  }
+
+  it("should resolve with the provided resolver for AAAA records") {
+    val host = "google.de"
+    val addr = "1:2:3:4:5:6:7:8"
+    val resolver = mock[HostResolver]
+    val resolved = Some(AAAARecord(addr.toString))
+    when(resolver.resolve(any[String]())).thenReturn(resolved)
+
+    val message: Message = Query ~ Questions(QName(host) ~ TypeA)
+    val result = new TypeAHandler(resolver, None).handle.lift(message)
+
+    result.nonEmpty shouldBe true
+    result.map { r =>
+      r.answer.nonEmpty shouldBe true
+      r.answer match {
+        case List(AAAARecord(record)) =>
           record.address shouldBe InetAddresses.forString(addr)
 
         case other =>
