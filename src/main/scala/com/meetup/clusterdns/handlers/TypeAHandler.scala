@@ -10,6 +10,7 @@ class TypeAHandler(
 ) extends QueryHandler {
 
   override def handle: PartialFunction[Any, Message] = {
+
     case Query(q) ~ Questions(QName(host) ~ TypeA() :: Nil) =>
       Response(q) ~ resolver.resolve(
         // If a transformer exists use it.
@@ -19,6 +20,17 @@ class TypeAHandler(
       ).fold[MessageModifier](ServerFailure) { aRecord =>
           Answers(RRName(host) ~ aRecord)
         }
+
+    case Query(q) ~ Questions(QName(host) ~ TypeAAAA() :: Nil) =>
+      Response(q) ~ resolver.resolve(
+        // If a transformer exists use it.
+        transformer.fold(host)(_.transform(host))
+      // If there's no resolve response, error otherwise
+      // return with original host name.
+      ).fold[MessageModifier](ServerFailure) { aRecord =>
+          Answers(RRName(host) ~ aRecord)
+        }
+
   }
 
 }

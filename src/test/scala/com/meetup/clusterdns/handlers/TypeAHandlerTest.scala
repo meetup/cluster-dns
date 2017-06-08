@@ -60,4 +60,28 @@ class TypeAHandlerTest extends FunSpec with Matchers with MockitoSugar {
       }
     }
   }
+
+  it("should resolve with the provided resolver") {
+    val host = "google.de"
+    val addr = "0000 0000 0000 0000 0000 FFFF 0A00 0001"
+
+    val resolver = mock[HostResolver]
+    val resolved = Some(AAAARecord(addr.toString))
+    when(resolver.resolve(any())).thenReturn(resolved)
+
+    val message: Message = Query ~ Questions(QName(host) ~ TypeA)
+    val result = new TypeAHandler(resolver, None).handle.lift(message)
+
+    result.nonEmpty shouldBe true
+    result.map { r =>
+      r.answer.nonEmpty shouldBe true
+      r.answer match {
+        case List(AAAARecord(record)) =>
+          record.address shouldBe InetAddresses.forString(addr)
+
+        case other =>
+          fail(s"Didn't recognize result: $other")
+      }
+    }
+  }
 }
