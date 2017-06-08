@@ -33,6 +33,7 @@ __package-sbt:
 		coverageReport \
 		coverallsMaybe \
 		coverageOff \
+		"set coverageEnabled := false" \
 		component:test \
 		'docker:publishLocal'
 
