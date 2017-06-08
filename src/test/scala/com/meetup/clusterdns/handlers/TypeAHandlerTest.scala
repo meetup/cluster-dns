@@ -16,7 +16,7 @@ class TypeAHandlerTest extends FunSpec with Matchers with MockitoSugar {
 
     val resolver = mock[HostResolver]
     val resolved = Some(ARecord(addr.toString))
-    when(resolver.resolve(any())).thenReturn(resolved)
+    when(resolver.resolve(any[String]())).thenReturn(resolved)
 
     val message: Message = Query ~ Questions(QName(host) ~ TypeA)
     val result = new TypeAHandler(resolver, None).handle.lift(message)
@@ -67,7 +67,7 @@ class TypeAHandlerTest extends FunSpec with Matchers with MockitoSugar {
 
     val resolver = mock[HostResolver]
     val resolved = Some(AAAARecord(addr.toString))
-    when(resolver.resolve(any())).thenReturn(resolved)
+    when(resolver.resolve(any[String]())).thenReturn(resolved)
 
     val message: Message = Query ~ Questions(QName(host) ~ TypeA)
     val result = new TypeAHandler(resolver, None).handle.lift(message)
